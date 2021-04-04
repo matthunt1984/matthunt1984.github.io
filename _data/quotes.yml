@@ -1,0 +1,74 @@
+# Quotes are rarely accurate even with attributions. Translation can eb a problem.
+# Therefore disclaimer that the sources or the quotes themselves may not be accurate. but their value is not in who said them, why or when, but in whether we can find use of them as tools todays 
+# https://en.wikipedia.org/wiki/Aphorism
+
+quotes:
+  - quote: Give me six hours to chop down a tree and I will spend the first four sharpening the axe
+    quotee: Abraham Lincoln
+    # source: 
+    tags: 
+    personal_note: This is very parallel to Stephen coveys sharpen the saw
+
+  - quote: All truth passes through three stages. First, it is ridiculed. Second, it is violently opposed. Third, it is accepted as being self-evident
+    quotee: Arthur Schopenhauer
+
+  - quote: Never ascribe to malice, that which can be explained by incompetence
+    quotee: Napoleon
+
+  - quote:  Perfection is the enemy of good
+    quotee: Voltaire
+
+  - quote:  When we read, another person thinks for us; we merely repeat his mental process
+    quotee: Arthur Schopenhauer
+    
+  - quote:  If I had an hour to solve a problem and my life depended on the solution, I would spend the first 55 minutes determining the proper question to ask… for once I know the proper question, I could solve the problem in less than five minutes.
+    quotee: Albert Einstein
+    
+  - quote: A complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work. You have to start over, beginning with a working simple system
+    quotee: John Gall
+    tags: tech
+
+  - quote: Organizations which design systems ... are constrained to produce designs which are copies of the communication structures of these organizations
+    quotee: M. Conway
+    title: Conway's Law
+    tags: tech
+    source: https://en.wikipedia.org/wiki/Conway%27s_law
+
+  - quote: There are two ways of constructing a [design]; One way is to make it so simple that there are obviously no deficiencies, and the other way is to make it so complicated that there are no obvious deficiencies. 
+    quotee: C.A.R. Hoare
+    tags: tech
+    source: https://less.works/less/framework/introduction.html
+
+  - quote: In economics, the Jevons paradox occurs when technological progress or government policy increases the efficiency with which a resource is used (reducing the amount necessary for any one use), but the rate of consumption of that resource rises due to increasing demand
+    quotee: William Stanley Jevons 
+    title: Jevons Paradox
+    tags: economics
+    source: https://en.wikipedia.org/wiki/Jevons_paradox
+
+  - quote: The Pareto principle states that for many outcomes, roughly 80% of consequences come from 20% of the causes
+    quotee: Vilfredo Pareto 
+    title: Pareto principle
+    source: https://en.wikipedia.org/wiki/Pareto_principle
+
+  - quote: Work expands so as to fill the time available for its completion
+    quotee: Cyril Northcote Parkinson  
+    title: Parkinson's Law
+    source: https://en.wikipedia.org/wiki/Parkinson%27s_law
+
+  - quote: Regardless of what we discover, we understand and truly believe that everyone did the best job they could, given what they knew at the time, their skills and abilities, the resources available, and the situation at hand
+    quotee: Norm Kerth  
+    title: Prime Directive
+
+  - quote: People in a hierarchy tend to rise to their "level of incompetence"; employees are promoted based on their success in previous jobs until they reach a level at which they are no longer competent, as skills in one job do not necessarily translate to another
+    quotee: Laurence J. Peter  
+    title: Peter Principle
+    source: https://en.wikipedia.org/wiki/Parkinson%27s_law
+
+private_quotes:
+  - quote: What you can’t explain to others, you don’t understand yourself
+  - quote: A manager creates followers, a leader creates other leaders (Tom Peters?)
+  - quote: Value of a network is the square of the number of nodes. Metacalfes Law.
+
+others:
+  - Punctuated equilibrium - the idea a species splits abrubtly into two different species rather than a gradual change into the next. Used in IT contexts to denote what I'd call 'step change' or 'revolution over evolution. https://en.wikipedia.org/wiki/Punctuated_equilibrium
+  - Dunbar number. 150. The amount of people a person can have relationships with 
