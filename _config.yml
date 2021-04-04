@@ -58,7 +58,7 @@ plugins:
 author:
   name   : "Matt Hunt"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "Aspiring father, technologist and polymath"
+  bio    : "Aspiring technologist and polymath"
   links:
     # - label: "Website"
     #   icon: "fas fa-fw fa-link"
