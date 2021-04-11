@@ -1,3 +1,6 @@
+While drafting, posts should be in _drafts, and jekyll served with --drafts
+Can use master or branch. If using drafts master is probably fine
+
 Before posting remember to:
 - check it locally
 - ensure headings are valid
@@ -16,3 +19,4 @@ Intermittently check
 Short-term actions should go into todo.
 Longer term 'never likely to dos' can go here.
 - Automated testing including any or all of the above
+
