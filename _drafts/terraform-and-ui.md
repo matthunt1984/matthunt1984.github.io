@@ -1,254 +1,96 @@
 ---
-title:  "Using S3 for long-term photo backups"
-#date:   2021-03-27 17:02:39 +0000
+title:  "Importing manually created infrastructure into Terraform"
+#date:   2021-04-11 20:00:00 +0000, can't set date until finished
 categories: tech
-tags: diy-tech,aws,terraform
-#toc: true
-#toc_sticky: true
+tags: aws,terraform
+toc: true
+toc_sticky: true
 ---
 
-## Intro
+You might create resources manually via a GUI, or a command-line for various reasons, but particularly when you're learning a new resource, or optimising specific settings. GUIs typically have more advice and instructions etc that will make the process easier the first time.
 
-#https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform
+Now terraform is great, and the basic terraform flow is relatively straightforward. 
+![Terraform basic workflow]({{ "assets/images/terraform-exercise-api-archiver/basic-terraform-workflow.png" | relative_url}})
 
-`terraform refresh`
-`terraform import`
-`terraform show`
+I had assumed there'd be a very similar process to do the opposote. Convert existing infrastructure into updated or new config files; but it seems there's nothing quite that straightforward! *At least not yet*.
 
+**If you're using Oracle Cloud Infrastructure** - it seems that there is such an advanced tool in the form of [OCI Resource Descovery](https://registry.terraform.io/providers/hashicorp/oci/latest/docs/guides/resource_discovery):<BR/>*Terraform Resource Discovery can be used to discover deployed resources within a compartment and export them to Terraform configuration and state files.*
+{: .notice--info}
+
+If you're not using OCI, there are other options. If you're only considering minor drift from terraform created resources then this [blog post](#https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform) has most of the details. However if you want to fully bring in resources you created manually we will need `terraform import`. The best resource I found on it was the [terraform import tutorial](https://learn.hashicorp.com/tutorials/terraform/state-import?in=terraform/state&utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) - but I still found these resources lacking, so I have summarised my experiences here.
+
+## Updating terraform-created resources based on manual Changes
+
+There are two basic approaches here.
+1. Update the terraform state (`terraform.tfstate` file) and take the configs out of there. This is refreshed automatically after `terraform plan` but you can also do it explictly by calling `terraform refresh`.
+2. Run `terraform plan`, review the discrepancies and manually transfer these into config
+
+### Example
+
+An example resource with my manual edit 'drift'
+![Terraform plan showing edits]({{ "assets/images/terraform-exercise-api-archiver/terraform-plan-s3.png" | relative_url}})
+
+With either approach, if you've updated the config correctly, executing `terraform plan` will eventually show no changes. You now have your infrastructure config caught up to your environment.
+
+![Terraform plan showing no changes]({{ "assets/images/terraform-exercise-api-archiver/terraform-plan-s3-rebase.png" | relative_url}})
+
+I prefer the second approach, mainly because `terraform.tfstate` has all the values explicitly set, including post-creation attributes, and attributes set to defaults - whereas I prefer keeping things minimal.
+
+Once done, I found it handy to use `git diff` to compare the plan output and the config file changes I had made.
+{: .notice--info}
+
+![git diff after changes]({{ "assets/images/terraform-exercise-api-archiver/terraform-plan-s3-rebase-git.png" | relative_url}})
+
+## Importing resources, that were *created* manually
+
+![Terraform import workflow]({{ "assets/images/terraform-exercise-api-archiver/terraform-import-workflow-diagram.png" | relative_url}})
+
+The first approach works only when terraform created those resources. 
+
+Terraform intentionally only controls resources that it created, and leaves the rest alone. The `terraform import` command allows us to explicitly tell terraform to manage a resource it did not create. Unfortunately this command still does not give any updates into our config files, and somewhat awkwardly, we in fact need to update the config file with an empty placeholder before we can actually *do* the import.
+
+### Example
+
+![IAM User in AWS console]({{ "assets/images/terraform-exercise-api-archiver/terraform-console-iam.png" | relative_url}})
+
+In my case I wanted to import an IAM user I had created manually. I'd wanted to be cautious on permissions etc so had done this via the AWS console to start with, but now wanted to import back into terraform.
+
+I knew I had a user with permissions and an API key. I'd also created a 'console login profile' I no longer needed.
+
+#### Step 1
+I needed to create an empty config placeholder before importing the user. I had to refer to [the docs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) to confirm the resource type. Note at this poing the resource naming in our config could be whatever we like, but I chose to make it match the iam user's name
+
+```terraform
+resource "aws_iam_user" "console-archiver" {}
 ```
-root@DESKTOP-TO058IA:~/repos/my-archive (main *%=)# terraform show
-# aws_s3_bucket.media-archive-bucket:
-resource "aws_s3_bucket" "media-archive-bucket" {
-    acl                         = "private"
-    arn                         = "arn:aws:s3:::my-media-archive-20210306211714538000000001"
-    bucket                      = "my-media-archive-20210306211714538000000001"
-    bucket_domain_name          = "my-media-archive-20210306211714538000000001.s3.amazonaws.com"
-    bucket_prefix               = "my-media-archive-"
-    bucket_regional_domain_name = "my-media-archive-20210306211714538000000001.s3.eu-west-1.amazonaws.com"
-    force_destroy               = false
-    hosted_zone_id              = "Z1BKCTXD74EZPE"
-    id                          = "my-media-archive-20210306211714538000000001"
-    region                      = "eu-west-1"
-    request_payer               = "BucketOwner"
-    tags                        = {}
 
-    lifecycle_rule {
-        abort_incomplete_multipart_upload_days = 0
-        enabled                                = true
-        id                                     = "media"
-        tags                                   = {}
+#### Step 2
+After we have the placeholder, we can then import the state for this object as shown
+![Succesful terraform import]({{ "assets/images/terraform-exercise-api-archiver/terraform-import-result.png" | relative_url}})
 
-        transition {
-            days          = 10
-            storage_class = "DEEP_ARCHIVE"
-        }
-    }
+#### Step 3
+To populate the missing config (manually) you can again refer to `terraform plan` output which will callout missing mandatory attributes or highlight any changes from non-default values. The mandatory values can be looked up from tfstate e.g. via `terraform state show aws_iam_user.console-archiver` . Below is an example from another resource after I had imported, but before I had updated the config:
+![Terraform plan after import]({{ "assets/images/terraform-exercise-api-archiver/terraform-plan-after-import.png" | relative_url}})
 
-    versioning {
-        enabled    = false
-        mfa_delete = false
-    }
-}
-```
+#### Done
 
-'''
- "resources": [
-    {
-      "mode": "managed",
-      "type": "aws_s3_bucket",
-      "name": "media-archive-bucket",
-      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
-      "instances": [
-        {
-          "schema_version": 0,
-          "attributes": {
-            "acceleration_status": "",
-            "acl": "private",
-            "arn": "arn:aws:s3:::my-media-archive-20210306211714538000000001",
-            "bucket": "my-media-archive-20210306211714538000000001",
-            "bucket_domain_name": "my-media-archive-20210306211714538000000001.s3.amazonaws.com",
-            "bucket_prefix": "my-media-archive-",
-            "bucket_regional_domain_name": "my-media-archive-20210306211714538000000001.s3.eu-west-1.amazonaws.com",
-            "cors_rule": [],
-            "force_destroy": false,
-            "grant": [],
-            "hosted_zone_id": "Z1BKCTXD74EZPE",
-            "id": "my-media-archive-20210306211714538000000001",
-            "lifecycle_rule": [
-              {
-                "abort_incomplete_multipart_upload_days": 0,
-                "enabled": true,
-                "expiration": [],
-                "id": "media",
-                "noncurrent_version_expiration": [],
-                "noncurrent_version_transition": [],
-                "prefix": "",
-                "tags": {},
-                "transition": [
-                  {
-                    "date": "",
-                    "days": 10,
-                    "storage_class": "DEEP_ARCHIVE"
-                  }
-                ]
-              }
-            ],
-            "logging": [],
-            "object_lock_configuration": [],
-            "policy": null,
-            "region": "eu-west-1",
-            "replication_configuration": [],
-            "request_payer": "BucketOwner",
-            "server_side_encryption_configuration": [],
-            "tags": {},
-            "versioning": [
-              {
-                "enabled": false,
-                "mfa_delete": false
-              }
-            ],
-            "website": [],
-            "website_domain": null,
-            "website_endpoint": null
-          },
-          "sensitive_attributes": [],
-          "private": "bnVsbA=="
-        }
-      ]
-    }
-  ]
-'''
+After doing this for each of the resources and getting the plans to match the infrastructure, I had a nice and streamlined bit of terraform.
+![Terraform config in git diff]({{ "assets/images/terraform-exercise-api-archiver/terraform-new-diff.png" | relative_url}})
 
-'''
-root@DESKTOP-TO058IA:~/repos/my-archive (main *%=)# terraform plan
-aws_s3_bucket.media-archive-bucket: Refreshing state... [id=my-media-archive-20210306211714538000000001]
+{% assign terraform_file = site.pages | where: "name", "media-archive-tf.md" %}
 
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
-  ~ update in-place
+My final terraform file can be seen [here]({{ terraform_file[0].url }})
 
-Terraform will perform the following actions:
+## Conclusion
 
-  # aws_s3_bucket.media-archive-bucket will be updated in-place
-  ~ resource "aws_s3_bucket" "media-archive-bucket" {
-        id                          = "my-media-archive-20210306211714538000000001"
-        tags                        = {}
-        # (10 unchanged attributes hidden)
+It seems the `terraform import` workflow is workable, but not as automated and straightfoward a user experience as I had expected.
 
-      ~ lifecycle_rule {
-            id                                     = "media"
-          + prefix                                 = "media/"
-          ~ tags                                   = {
-              + "autoclean" = "true"
-              + "rule"      = "media"
-            }
-            # (2 unchanged attributes hidden)
+After having captured the infrastructure above I was then able to easily do the following 3 steps quite easily:
+1. Delete the user and recreate under a new name (api-archiver)
+2. Take the new secret out of tfstate* and update where it was needed (ODrive)
+3. Disable the key as its no longer needed
 
-          - transition {
-              - days          = 10 -> null
-              - storage_class = "DEEP_ARCHIVE" -> null
-            }
-          + transition {
-              + days          = 365
-              + storage_class = "DEEP_ARCHIVE"
-            }
-          + transition {
-              + days          = 7
-              + storage_class = "GLACIER"
-            }
-        }
+As well as the learning journey, I now feel more in control of terraform and my infrastructure.
 
-        # (1 unchanged block hidden)
-    }
-
-Plan: 0 to add, 1 to change, 0 to destroy.
-
-------------------------------------------------------------------------
-
-Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-can't guarantee that exactly these actions will be performed if
-"terraform apply" is subsequently run.
-'''
-
-'''
-resource "aws_iam_user" "console-archiver" {
-
-}
-'''
-
-
-'''
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform state show aws_iam_user.console-archiver
-# aws_iam_user.console-archiver:
-resource "aws_iam_user" "console-archiver" {
-    arn       = "arn:aws:iam::907364036946:user/console-archiver"
-    id        = "console-archiver"
-    name      = "console-archiver"
-    path      = "/"
-    tags      = {}
-    unique_id = "AIDA5GQY4OFJMIRGEN5D7"
-}
-
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform plan
-
-Error: Missing required argument
-
-  on archive.tf line 34, in resource "aws_iam_user" "console-archiver":
-  34: resource "aws_iam_user" "console-archiver" {
-
-The argument "name" is required, but no definition was found.
-'''
-
-'''
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform import aws_iam_user_policy_attachment.archiver-s3-full-access console-archiver/arn:aws:iam::aws:policy/AmazonS3FullAccess
-aws_iam_user_policy_attachment.archiver-s3-full-access: Importing from ID "console-archiver/arn:aws:iam::aws:policy/AmazonS3FullAccess"...
-aws_iam_user_policy_attachment.archiver-s3-full-access: Import prepared!
-  Prepared aws_iam_user_policy_attachment for import
-aws_iam_user_policy_attachment.archiver-s3-full-access: Refreshing state... [id=console-archiver-arn:aws:iam::aws:policy/AmazonS3FullAccess]
-
-Import successful!
-
-The resources that were imported are shown above. These resources are now in
-your Terraform state and will henceforth be managed by Terraform.
-'''
-
-'''
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform import aws_iam_access_key.console-archiver-key AKIA5GQY4OFJBESV65WW
-aws_iam_access_key.console-archiver-key: Importing from ID "AKIA5GQY4OFJBESV65WW"...
-aws_iam_access_key.console-archiver-key: Import prepared!
-  Prepared aws_iam_access_key for import
-aws_iam_access_key.console-archiver-key: Refreshing state... [id=AKIA5GQY4OFJBESV65WW]
-
-Import successful!
-
-The resources that were imported are shown above. These resources are now in
-your Terraform state and will henceforth be managed by Terraform.
-
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform plan
-
-Error: Missing required argument
-
-  on archive.tf line 43, in resource "aws_iam_access_key" "console-archiver-key":
-  43: resource "aws_iam_access_key" "console-archiver-key" {
-
-The argument "user" is required, but no definition was found.
-
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform plan
-aws_iam_user.console-archiver: Refreshing state... [id=console-archiver]
-aws_s3_bucket.media-archive-bucket: Refreshing state... [id=my-media-archive-20210306211714538000000001]
-aws_iam_user_policy_attachment.archiver-s3-full-access: Refreshing state... [id=console-archiver-arn:aws:iam::aws:policy/AmazonS3FullAccess]
-aws_iam_access_key.console-archiver-key: Refreshing state... [id=AKIA5GQY4OFJBESV65WW]
-
-No changes. Infrastructure is up-to-date.
-
-This means that Terraform did not detect any differences between your
-configuration and real physical resources that exist. As a result, no
-actions need to be performed.
-root@DESKTOP-TO058IA:~/repos/my-archive (main *=)# terraform apply
-aws_iam_user.console-archiver: Refreshing state... [id=console-archiver]
-aws_s3_bucket.media-archive-bucket: Refreshing state... [id=my-media-archive-20210306211714538000000001]
-aws_iam_user_policy_attachment.archiver-s3-full-access: Refreshing state... [id=console-archiver-arn:aws:iam::aws:policy/AmazonS3FullAccess]
-aws_iam_access_key.console-archiver-key: Refreshing state... [id=AKIA5GQY4OFJBESV65WW]
-
-Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
-'''
+**Danger Notice:** * As mentioned above, without special attention terraform can download secrets into tfstate, and therefore you should secure tfstate or tfstate.backup very carefully.
+{: .notice--danger}

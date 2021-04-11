@@ -1,13 +1,7 @@
 ---
-markdown: CommonMarkGhPages
-title:  "bloop"
-date:   2021-03-27 17:02:39 +0000
-last_modified_at: 2021-03-28
-categories: tech
-tags: diy-tech,aws,terraform
-#toc: true
-#toc_sticky: true
----
+markdown: CommonMarkGhPages #this doesn't work. It sets a variable in liqud. it does NOT impact markdown used in the page it seems
+title:  "Collapse test"
+categories: demo
 ---
 
 Collapse test

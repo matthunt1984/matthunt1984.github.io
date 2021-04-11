@@ -1,7 +1,6 @@
 ---
 title: "Post: Link"
-categories:
-  - Blog
+categories: demo
 tags:
   - link
   - Post Formats

@@ -1,8 +1,6 @@
 ---
 title: "Welcome to Jekyll! - edit"
-date: 2019-04-18T15:34:30-04:00
-categories:
-  - blog
+categories: demo
 tags:
   - Jekyll
   - update
