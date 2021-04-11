@@ -1,10 +1,11 @@
 ---
-title: "Terraform extract"
-#permalink: /posts/
-layout: posts
+title: "Terraform for my media archive"
+permalink: /ref/:basename
 
-#Accessible via : http://127.0.0.1:4000/_pages/media-archive-tf/
+#Accessible via : http://127.0.0.1:4000/ref/media-archive-tf
 ---
+
+This was originaly used in my [previous post]({% post_url 2021-03-27-using-s3-for-long-term-photo-backups %})
 
 ```terraform
 terraform {
@@ -18,13 +19,13 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "eu-west-1" #or nearer
+  region  = "eu-west-1"
 }
 
 resource "aws_s3_bucket" "media-archive-bucket" {
   bucket_prefix = "my-media-archive-"
-  acl           = "private" #?authenticated-read? or grant?
-
+  acl           = "private" 
+  
   lifecycle_rule {
     id      = "media"
     enabled = true

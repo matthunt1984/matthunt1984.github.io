@@ -1,14 +1,12 @@
 ---
 title:  "Using S3 for long-term photo backups"
 date:   2021-03-27 17:02:39 +0000
-last_modified_at: 2021-03-28
+last_modified_at: 2021-04-11
 categories: tech
 tags: diy-tech,aws,s3
 toc: true
 toc_sticky: true
 ---
-
-<!-- **TL/DR:** I gave up chasing 'free' cloud storage. I built my own setup using S3, which is cheap for long-term storage backups, I own the content, and there's no meaningful storage cap. -->
 
 ## Intro
 
@@ -51,12 +49,16 @@ Pre-requisites required are below, but can be setup quickly if needed:
 
 #### Terraform content
 
-The [Terraform file](https://github.com/matthunt1984/my-archive/blob/main/archive.tf)* I used creates the following structure
-1. S3 bucket to contain the files
-2. S3 lifecycle policy to move files to Deep Glacier (after 10 days)
-3. IAM user that has permissions to populate it (which I created for using with ODrive)
+{% assign terraform_file = site.pages | where: "name", "media-archive-tf.md" %}
 
-**TODO: Update the terraform file's permissions*
+I used Terraform to create the following resources:
+1. S3 bucket to contain the files
+2. Lifecycle policy to move files to Deep Glacier (after 10 days)
+3. IAM user to populate it (which I created for using with ODrive)
+4. Permissions for that user on S3
+5. API key to be grant access from ODrive
+
+The full terraform file can be seen [here]({{ terraform_file[0].url }})
 
 ## Migration plan
 
