@@ -1,19 +1,13 @@
 ---
 title:  "Using S3 for long-term photo backups"
 date:   2021-03-27 17:02:39 +0000
-last_modified_at: 2021-03-28
+last_modified_at: 2021-04-11
 categories: tech
 tags: diy-tech,aws,s3
 toc: true
 toc_sticky: true
 ---
-
-<!-- **TL/DR:** I gave up chasing 'free' cloud storage. I built my own setup using S3, which is cheap for long-term storage backups, I own the content, and there's no meaningful storage cap. -->
-
-## Intro
-
 <!-- TODO *INSERT THE PLANTUML OF MY PHOTO PLAN BEFORE AND AFTER?* -->
-
 I've used various 'free' cloud storage solutions including Dropbox, Amazon Photos and Google Photos and when I hit the paywall have moved my photos to the next service that is feeling generous with their 'free unlimited storage' options. I
 
 My situation at the start of this
@@ -26,7 +20,7 @@ After Google photos wanted paying, and partly after realising the truth of a quo
 
 Working in tech - I also work with Amazon, S3 and Terraform, so I thought I could achieve these aims, have fun and learn something.
 
-## Note: S3 is NOT a tool for _managing_ your photo collection
+**Note: S3 is NOT a tool for _managing_ your photo collection**
 
 To be clear I wanted somewhere to stick my photos (and maybe other backups) unaltered, at minimal cost, so that I'll never lose access to them and could mostly forget about them. However S3 is not user friendly for working with photos in terms of cataloging, editing, tagging etc.
 
@@ -51,12 +45,16 @@ Pre-requisites required are below, but can be setup quickly if needed:
 
 #### Terraform content
 
-The [Terraform file](https://github.com/matthunt1984/my-archive/blob/main/archive.tf)* I used creates the following structure
-1. S3 bucket to contain the files
-2. S3 lifecycle policy to move files to Deep Glacier (after 10 days)
-3. IAM user that has permissions to populate it (which I created for using with ODrive)
+{% assign terraform_file = site.pages | where: "name", "media-archive-tf.md" %}
 
-**TODO: Update the terraform file's permissions*
+I used Terraform to create the following resources:
+1. S3 bucket to contain the files
+2. Lifecycle policy to move files to Deep Glacier (after 10 days)
+3. IAM user to populate it (which I created for using with ODrive)
+4. Permissions for that user on S3
+5. API key to be grant access from ODrive
+
+The full terraform file can be seen [here]({{ terraform_file[0].url }})
 
 ## Migration plan
 
