@@ -7,11 +7,7 @@ tags: diy-tech,aws,s3
 toc: true
 toc_sticky: true
 ---
-
-## Intro
-
 <!-- TODO *INSERT THE PLANTUML OF MY PHOTO PLAN BEFORE AND AFTER?* -->
-
 I've used various 'free' cloud storage solutions including Dropbox, Amazon Photos and Google Photos and when I hit the paywall have moved my photos to the next service that is feeling generous with their 'free unlimited storage' options. I
 
 My situation at the start of this
@@ -24,7 +20,7 @@ After Google photos wanted paying, and partly after realising the truth of a quo
 
 Working in tech - I also work with Amazon, S3 and Terraform, so I thought I could achieve these aims, have fun and learn something.
 
-## Note: S3 is NOT a tool for _managing_ your photo collection
+**Note: S3 is NOT a tool for _managing_ your photo collection**
 
 To be clear I wanted somewhere to stick my photos (and maybe other backups) unaltered, at minimal cost, so that I'll never lose access to them and could mostly forget about them. However S3 is not user friendly for working with photos in terms of cataloging, editing, tagging etc.
 
