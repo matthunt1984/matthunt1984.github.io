@@ -1,6 +1,5 @@
 ---
 title:  "Fix: Stop using root for WSL2"
-#date:   2021-03-27 17:02:39 +0000
 categories: tech
 tags: wsl security
 toc: true
