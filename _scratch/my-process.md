@@ -12,6 +12,9 @@ GitHub workflow
 1. Branch. PR, review and just merge (no need to approve)
 2. Direct on master (is OK if not long running/save in progress)
 
+Future posts
+Can add future posts by simply having the publish date in the filename and leave the date atrribute out. Can review these with the --future when serving
+
 Intermittently check
 - More complex elements still work, eg collapsible code blocks
 - Test from mobile and other browsers
