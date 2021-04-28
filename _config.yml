@@ -127,3 +127,11 @@ analytics:
   google:
     tracking_id: "G-5274CZ9VK0"
     anonymize_ip: false # default
+
+#Added for staticman v3
+repository  : "matthunt1984/matthunt1984.github.io" # Git username/repo-name
+comments:
+  provider: "staticman_v2"
+  staticman:
+    branch: "master"
+    endpoint: "https://0fytzsznif.execute-api.eu-west-1.amazonaws.com/dev/v3/entry/github/" #exclude repository mentioned above
