@@ -133,5 +133,5 @@ repository  : "matthunt1984/matthunt1984.github.io" # Git username/repo-name
 comments:
   provider: "staticman_v2"
   staticman:
-    branch: "staticman"
+    branch: "master"
     endpoint: "https://k7en2xc11c.execute-api.eu-west-1.amazonaws.com/dev/v3/entry/github/" #exclude repository mentioned above
