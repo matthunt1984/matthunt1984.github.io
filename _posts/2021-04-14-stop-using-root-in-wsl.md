@@ -1,7 +1,9 @@
 ---
 title:  "Fix: Stop using root for WSL2"
 categories: tech
-tags: wsl security
+tags:
+  - wsl
+  - security
 toc: true
 toc_sticky: true
 ---

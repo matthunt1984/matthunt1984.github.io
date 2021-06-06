@@ -2,7 +2,9 @@
 title:  "Importing manually created infrastructure into Terraform"
 date:   2021-04-11 20:00:00 +0000, can't set date until finished
 categories: tech
-tags: aws,terraform
+tags:
+  - aws
+  - terraform
 toc: true
 toc_sticky: true
 ---
