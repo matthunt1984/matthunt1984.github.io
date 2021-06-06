@@ -5,8 +5,6 @@ categories: tech
 tags:
   - aws
   - terraform
-toc: true
-toc_sticky: true
 ---
 
 You might create resources manually via a GUI, or a command-line for various reasons, but particularly when you're learning a new resource, or optimising specific settings. GUIs typically have more advice and instructions etc that will make the process easier the first time.

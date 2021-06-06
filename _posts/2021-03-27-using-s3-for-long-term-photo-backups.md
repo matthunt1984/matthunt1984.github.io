@@ -7,8 +7,6 @@ tags:
   - diy-tech
   - aws
   - s3
-toc: true
-toc_sticky: true
 ---
 <!-- TODO *INSERT THE PLANTUML OF MY PHOTO PLAN BEFORE AND AFTER?* -->
 I've used various 'free' cloud storage solutions including Dropbox, Amazon Photos and Google Photos and when I hit the paywall have moved my photos to the next service that is feeling generous with their 'free unlimited storage' options. I

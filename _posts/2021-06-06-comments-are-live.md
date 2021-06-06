@@ -45,7 +45,7 @@ So most readers probably DO have facebook logins, but on the privacy front Faceb
 ### Utterances
 Utterances was my second choice. It's open-source, gives you full control of content, and worked with my theme. The main concession was a requirement of a GitHub account which isn't a tough barrier for a tech blog but I had hoped to do more than just tech on here longer term, and although the content is in Github it's not as portable as staticman which converts it to markdown. I still think one is worth a look.
 
-## Conclusion
+## Conclusion: staticman
 
 In the end, staticman won out for these key reasons:
 - Open-source, and fully 'on me' server-side solution. I also liked the challenge this would give.

@@ -4,8 +4,6 @@ categories: tech
 tags:
   - wsl
   - security
-toc: true
-toc_sticky: true
 ---
 
 I've been a big fan of WSL since it first came out, and now use [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10) ubuntu for most of my development activities either at home or at work.
