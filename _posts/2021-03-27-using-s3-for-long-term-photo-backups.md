@@ -1,6 +1,5 @@
 ---
 title:  "Using S3 for long-term photo backups"
-date:   2021-03-27 17:02:39 +0000
 last_modified_at: 2021-04-11
 categories: tech
 tags: 
